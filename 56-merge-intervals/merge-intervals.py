@@ -6,6 +6,8 @@ class Solution:
 
         while i < len(intervals):
             start, end = intervals[i]
+            # This loop mantains the invariant that these intervals
+            # are overlapping the i'th interval
             while j < len(intervals) and intervals[j][0] <= end:
                 end = max(end, intervals[j][1])
                 j += 1
