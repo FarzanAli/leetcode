@@ -12,8 +12,8 @@ class Solution:
         def dfs(c):
             if c in visited:
                 return False
-            # if pre[c] == []:
-            #     return True
+            if pre[c] == []:
+                return True
             visited.add(c)
             for p in pre[c]:
                 if not dfs(p): return False
