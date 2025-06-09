@@ -1,30 +1,27 @@
 class Solution:
     def findRedundantConnection(self, edges: List[List[int]]) -> List[int]:
-        graph = {}
-        largest = 1
-        total = set()
-        for a, b in edges:
-            total.add(a)
-            total.add(b)
-            largest = max(largest, max(a, b))
-            if a in graph: graph[a].append(b)
-            else: graph[a] = [b]
+        rank = [0] * (len(edges) + 1)
+        par = [i for i in range(len(edges) + 1)]
 
-            if b in graph: graph[b].append(a)
-            else: graph[b] = [a]
-        
-        def dfs(n, visited, prev):
-            if n in visited:
-                return [False, visited]
-            visited.add(n)
-            for nb in graph[n]:
-                if nb != prev and not dfs(nb, visited, n)[0]: return [False, visited]
-            return [True, visited]
-        
-        for i in range(1, largest + 1):
-            visited = dfs(i, set(), -1)[1]
-            total = total & visited
-        
-        for a, b in reversed(edges):
-            if a in total and b in total:
+        def find(a):
+            if a != par[a]:
+                # Path compression
+                par[a] = find(par[a])
+            return par[a]
+
+        def union(a, b):
+            a, b = find(a), find(b)
+            if a == b:
+                return False
+            if rank[a] > rank[b]:
+                par[b] = a
+                rank[a] += rank[b]
+            else:
+                par[a] = b
+                rank[b] += rank[a]
+            return True
+
+        for a, b in edges:
+            # Check if this edge creates a cycle
+            if not union(a, b):
                 return [a, b]
