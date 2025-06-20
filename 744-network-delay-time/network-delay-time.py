@@ -3,20 +3,19 @@ class Solution:
         graph = defaultdict(list)
         for u, v, w in times:
             graph[u].append((v, w))
-
+        
         minHeap = [(0, k)]
         visited = set()
-        t = 0
 
+        most = 0
         while minHeap:
-            w1, n1 = heapq.heappop(minHeap)
-            if n1 in visited:
+            timeTaken, curr = heapq.heappop(minHeap)
+            if curr in visited:
                 continue
-            visited.add(n1)
-            t = max(t, w1)
+            visited.add(curr)
+            most = max(most, timeTaken)
 
-            for n2, w2 in graph[n1]:
-                if n2 not in visited:
-                    heapq.heappush(minHeap, (w1 + w2, n2))
-        
-        return t if len(visited) == n else -1
+            for nb, w in graph[curr]:
+                if nb not in visited:
+                    heapq.heappush(minHeap, (timeTaken + w, nb))
+        return most if len(visited) == n else -1
