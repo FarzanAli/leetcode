@@ -1,13 +1,13 @@
 class Solution:
     def findRedundantConnection(self, edges: List[List[int]]) -> List[int]:
-        rank = [0] * (len(edges) + 1)
-        par = [i for i in range(len(edges) + 1)]
+        rank = [ 0 for _ in range(len(edges) + 1) ]
+        par = [ i for i in range(len(edges) + 1) ]
 
-        def find(a):
-            if a != par[a]:
-                # Path compression
-                par[a] = find(par[a])
-            return par[a]
+        def find(n):
+            if n == par[n]:
+                return n
+            par[n] = find(par[n])
+            return par[n]
 
         def union(a, b):
             a, b = find(a), find(b)
@@ -20,8 +20,8 @@ class Solution:
                 par[a] = b
                 rank[b] += rank[a]
             return True
-
+        
         for a, b in edges:
-            # Check if this edge creates a cycle
             if not union(a, b):
                 return [a, b]
+        return True
